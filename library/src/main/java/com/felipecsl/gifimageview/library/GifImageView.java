@@ -130,10 +130,11 @@ public class GifImageView extends ImageView implements Runnable {
       handler.post(cleanupRunnable);
       return;
     }
-
     final int n = gifDecoder.getFrameCount();
-    Log.d(TAG, "frame count:"+n);
     do {
+      if(this.stateChangelistener != null){
+        stateChangelistener.onAnimationStart(this);
+      }
       for (int i = 0; i < n; i++) {
         if (!animating) {
           break;
@@ -172,6 +173,9 @@ public class GifImageView extends ImageView implements Runnable {
           // suppress any exception
           // it can be InterruptedException or IllegalArgumentException
         }
+      }
+      if(stateChangelistener != null){
+        stateChangelistener.onAnimationEnd(this);
       }
     } while (animating);
   }
