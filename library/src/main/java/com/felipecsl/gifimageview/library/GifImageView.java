@@ -19,6 +19,7 @@ public class GifImageView extends ImageView implements Runnable {
   private Thread animationThread;
   private OnFrameAvailable frameCallback = null;
   private long framesDisplayDuration = -1L;
+  private OnAnimationStateChange stateChangelistener;
 
   private final Runnable updateResults = new Runnable() {
     @Override
@@ -62,6 +63,10 @@ public class GifImageView extends ImageView implements Runnable {
       animationThread = new Thread(this);
       animationThread.start();
     }
+  }
+
+  public void setAnimationListener(OnAnimationStateChange listener){
+    this.stateChangelistener = listener;
   }
 
   public long getFramesDisplayDuration() {
@@ -127,6 +132,7 @@ public class GifImageView extends ImageView implements Runnable {
     }
 
     final int n = gifDecoder.getFrameCount();
+    Log.d(TAG, "frame count:"+n);
     do {
       for (int i = 0; i < n; i++) {
         if (!animating) {
@@ -180,5 +186,12 @@ public class GifImageView extends ImageView implements Runnable {
 
   public interface OnFrameAvailable {
     Bitmap onFrameAvailable(Bitmap bitmap);
+  }
+
+  public interface OnAnimationStateChange{
+
+    public void onAnimationStart(GifImageView giv);
+
+    public void onAnimationEnd(GifImageView giv);
   }
 }
